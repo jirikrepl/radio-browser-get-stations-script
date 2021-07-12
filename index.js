@@ -34,6 +34,7 @@
 // })();
 
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 (async function main() {
   const response  = await fetch("https://de1.api.radio-browser.info/json/stations/search", {
@@ -58,7 +59,10 @@ const fetch = require('node-fetch');
 
   const stations = await response.text()
   const stationsJson = JSON.parse(stations);
+  let content = '';
   for (const station of stationsJson) {
-    console.log(station.name);
+    content += `"${station.name}","${station.url}"\n`;
   }
+  console.log(content);
+  fs.writeFileSync(`${__dirname}/cz-stations.csv`, content);
 })();
