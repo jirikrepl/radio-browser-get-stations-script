@@ -36,7 +36,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 
-(async function main() {
+async function getStations(param, filename) {
   const response  = await fetch("https://de1.api.radio-browser.info/json/stations/search", {
     "headers": {
       "accept": "application/json, text/plain, */*",
@@ -52,7 +52,7 @@ const fs = require('fs');
     },
     "referrer": "https://www.radio-browser.info/",
     "referrerPolicy": "strict-origin-when-cross-origin",
-    "body": "{\"offset\":0,\"language\":\"czech\",\"hidebroken\":true,\"order\":\"clickcount\",\"reverse\":true}",
+    "body": `{"offset":0,${param},"hidebroken":true,"order":"clickcount","reverse":true}`,
     "method": "POST",
     "mode": "cors"
   });
@@ -64,5 +64,9 @@ const fs = require('fs');
     content += `"${station.name}","${station.url}"\n`;
   }
   console.log(content);
-  fs.writeFileSync(`${__dirname}/cz-stations.csv`, content);
-})();
+  fs.writeFileSync(`${__dirname}/${filename}-stations.csv`, content);
+};
+
+// getStations('"language":"dutch"', 'dutch');
+// getStations('"language":"czech"', 'czech');
+getStations('"language":"german"', 'german');
